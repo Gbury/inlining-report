@@ -1,0 +1,8 @@
+EXCLUDE_QUERY_DIR
+B /home/guigui/build/ocaml/inlining-report/_opam/lib/ocaml-compiler-libs/common
+B /usr/lib/ocaml/compiler-libs
+B ../../../_build/default/src/lib/core/.inlining_report_core.objs/byte
+S /home/guigui/build/ocaml/inlining-report/_opam/lib/ocaml-compiler-libs/common
+S /usr/lib/ocaml/compiler-libs
+S .
+FLG -open Inlining_report_core -linkall

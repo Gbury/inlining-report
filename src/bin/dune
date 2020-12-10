@@ -1,0 +1,9 @@
+
+(executable
+ (name         main)
+ (public_name  inlining_report)
+ (libraries
+   ; internal lib
+   inlining_report_core inlining_report_format
+ )
+)

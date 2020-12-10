@@ -1,0 +1,13 @@
+
+(library
+  (name           inlining_report_format)
+  (public_name    inlining_report.format)
+  (lint           (pps ppx_yojson_conv))
+  (preprocess     (pps ppx_yojson_conv))
+  (libraries
+    ; External deps
+    yojson
+    ; Deps for the various formats
+    inlining_report_format_flambda2_1_0_0
+  )
+)

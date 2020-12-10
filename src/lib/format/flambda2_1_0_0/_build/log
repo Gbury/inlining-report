@@ -1,0 +1,6 @@
+# dune build
+# OCAMLPARAM: unset
+# Workspace root: /home/guigui/build/ocaml/inlining-report/src/lib/json/v1
+$ /usr/bin/nproc > /tmp/dunef7b16c.output 2> /dev/null
+# Auto-detected concurrency: 4
+# disable binary cache

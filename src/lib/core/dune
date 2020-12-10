@@ -1,0 +1,11 @@
+
+(library
+  (name           inlining_report_core)
+  (public_name    inlining_report.core)
+  (flags          (-linkall))
+  (libraries
+    ; Compiler-libs packaged
+    ocaml-compiler-libs.common
+    ;
+  )
+)
