@@ -1,22 +1,4 @@
 EXCLUDE_QUERY_DIR
-B /home/guigui/build/ocaml/inlining-report/_opam/lib/biniou
-B /home/guigui/build/ocaml/inlining-report/_opam/lib/easy-format
-B /home/guigui/build/ocaml/inlining-report/_opam/lib/ocaml-compiler-libs/common
-B /home/guigui/build/ocaml/inlining-report/_opam/lib/ppx_yojson_conv_lib
-B /home/guigui/build/ocaml/inlining-report/_opam/lib/yojson
-B /usr/lib/ocaml/compiler-libs
-B ../../_build/default/src/lib/.inlining_report.objs/byte
-B ../../_build/default/src/lib/core/.inlining_report_core.objs/byte
-B ../../_build/default/src/lib/format/.inlining_report_format.objs/byte
-B ../../_build/default/src/lib/format/flambda2_1_0_0/.inlining_report_format_flambda2_1_0_0.objs/byte
-S /home/guigui/build/ocaml/inlining-report/_opam/lib/biniou
-S /home/guigui/build/ocaml/inlining-report/_opam/lib/easy-format
-S /home/guigui/build/ocaml/inlining-report/_opam/lib/ocaml-compiler-libs/common
-S /home/guigui/build/ocaml/inlining-report/_opam/lib/ppx_yojson_conv_lib
-S /home/guigui/build/ocaml/inlining-report/_opam/lib/yojson
-S /usr/lib/ocaml/compiler-libs
+B ../../_build/default/src/lib/.ocir.objs/byte
 S .
-S core
-S format
-S format/flambda2_1_0_0
-FLG -open Inlining_report -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs
+FLG -open Ocir -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs

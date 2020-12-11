@@ -1,10 +1,10 @@
 (library
-  (name inlining_report)
-  (public_name inlining_report)
+  (name        ocir)
+  (public_name ocir)
   (libraries
     ; Core definitions and manipulations
-    inlining_report_core
+    ocir_core
     ; Serializing/Deserializing formats
-    inlining_report_format
+    ocir_format
     )
 )

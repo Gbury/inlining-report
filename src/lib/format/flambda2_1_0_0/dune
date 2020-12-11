@@ -1,8 +1,8 @@
 
 (library
-  (name           inlining_report_format_flambda2_1_0_0)
-  (public_name    inlining_report.format.flambda2_1_0_0)
+  (name           ocir_format_flambda2_1_0_0)
+  (public_name    ocir.format.flambda2_1_0_0)
   (lint           (pps ppx_yojson_conv))
   (preprocess     (pps ppx_yojson_conv))
-  (libraries      yojson inlining_report_core)
+  (libraries      yojson ocir_core)
 )

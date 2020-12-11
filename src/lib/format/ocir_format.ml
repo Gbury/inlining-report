@@ -1,13 +1,32 @@
 
+(* Versions for supported formats *)
+
+module Version = struct
+
+  type flambda (* no version yet *)
+
+  type flambda2 =
+    | V1_0_0
+
+  type t =
+    | Flambda of flambda
+    | Flambda2 of flambda2
+
+end
+
 (* All format versions supported *)
 
 type t = [
-  | Inlining_report_format_flambda2_1_0_0.Report.t
+  | Ocir_format_flambda2_1_0_0.Report.t
 ] [@@deriving yojson]
 
+let version t : Version.t =
+  match (t : t) with
+  | #Ocir_format_flambda2_1_0_0.Report.t -> Flambda2 V1_0_0
+
 let conv = function
-  | #Inlining_report_format_flambda2_1_0_0.Report.t as t ->
-    Inlining_report_format_flambda2_1_0_0.Report.conv t
+  | #Ocir_format_flambda2_1_0_0.Report.t as t ->
+    Ocir_format_flambda2_1_0_0.Report.conv t
 
 (* marshall format parsing *)
 

@@ -1,9 +1,9 @@
 
 (executable
  (name         main)
- (public_name  inlining_report)
+ (public_name  ocir)
  (libraries
    ; internal lib
-   inlining_report_core inlining_report_format
+   ocir_core ocir_format
  )
 )

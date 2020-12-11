@@ -4,5 +4,5 @@
 
 type t = [ `Flambda2_1_0_0 of Inlining_report.t list ] [@@deriving yojson]
 
-let conv (_ : t) : Inlining_report_core.Report.t = assert false
+let conv (_ : t) : Ocir_core.Report.t = assert false
 
