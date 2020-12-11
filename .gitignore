@@ -1,0 +1,19 @@
+# Generated directories
+_build/
+_coverage/
+src/_build/
+
+# Generated files
+.merlin
+*.install
+doc/index.html
+
+# ocamlbuild targets
+*.byte
+*.native
+
+# opam local switch
+_opam
+
+# swap files
+*.swp
