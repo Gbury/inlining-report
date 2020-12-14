@@ -10,3 +10,13 @@ module Threshold = struct
     | Can_inline_if_no_larger_than of int
   [@@deriving yojson]
 end
+
+(* Conversion function *)
+(* ******************* *)
+
+let conv t : Ocir_core.Inlining_threshold.t =
+  match (t : Threshold.t) with
+  | Never_inline -> Never_inline
+  | Can_inline_if_no_larger_than i -> Can_inline_if_no_larger_than i
+
+

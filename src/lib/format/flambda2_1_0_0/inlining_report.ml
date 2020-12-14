@@ -37,4 +37,18 @@ type t = {
 [@@deriving yojson]
 
 
+(* Conversion function *)
+(* ******************* *)
+
+let conv_callsite t : Ocir_core.Call_site_decision.t =
+  match (t: at_call_site) with
+  | Unknown_function -> Unknown_function
+  | Non_inlinable_function { code_id; } ->
+    let code_id = Code_id.conv code_id in
+    Non_inlinable_function { code_id; }
+  | Inlinable_function { code_id; decision; } ->
+    let code_id = Code_id.conv code_id in
+    let decision = Inlining_decision.conv_callsite decision in
+    Inlinable_function { code_id; decision; }
+
 

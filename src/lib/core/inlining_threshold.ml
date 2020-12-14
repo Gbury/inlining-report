@@ -8,8 +8,20 @@
     simply a mix of estimate between actual size of
     the assembly generated, and speed of execution. *)
 
+(* Type definitions *)
+(* ************************************************************************* *)
+
 type t =
   | Never_inline
   | Can_inline_if_no_larger_than of int (**)
 (** Threshold for inlining decisions. *)
+
+(* Printing *)
+(* ************************************************************************* *)
+
+let print fmt = function
+  | Never_inline ->
+    Format.fprintf fmt "never inline"
+  | Can_inline_if_no_larger_than i ->
+    Format.fprintf fmt "can inline if size <= %d" i
 

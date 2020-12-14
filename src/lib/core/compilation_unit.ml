@@ -6,8 +6,16 @@
 
 *)
 
+(* Type definitions *)
+(* ************************************************************************* *)
+
 type t = {
-  id : Ocaml_common.Ident.t;
+  id : Ident.t;
   linkage_name : Linkage_name.t;
 }
+
+(* Printing *)
+(* ************************************************************************* *)
+
+let print fmt { id; linkage_name = _; } = Ident.print fmt id
 

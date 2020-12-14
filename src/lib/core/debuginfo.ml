@@ -9,7 +9,10 @@
 
 include Ocaml_common.Debuginfo
 
+(* Useful additions *)
+
 module Map = Map.Make(struct
     type nonrec t = t
     let compare = compare
-end)
+  end)
+

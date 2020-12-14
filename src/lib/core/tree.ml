@@ -1,9 +1,11 @@
 
-(** Decisions
+(** Location trees
 
-    This is where most of the inlining information is.
+    This represents a trees of locations relevant to represent in
+    a structured way the sets of locations where inlining decisions
+    can occur.
 
-    There are two poitns where one can make decision about
+    There are two points where one can make decision about
     inlining:
     - during the definition of a function, some computation
       can take place to determine whether it should be inlined
@@ -31,22 +33,24 @@
     debuginfos to decisions.
 *)
 
-type t =
+(* Type definitions *)
+(* ************************************************************************* *)
+
+type ('call, 'clos) node =
   | Call of {
-      decision : Call_site_decision.t;
-      inlined : map option;
+      decision : 'call;
+      inlined : ('call, 'clos) t;
     }
-  (** Invariant: [inlined = Some map] iff the decision
-      says to inline the call (the map could be empty
-      though). *)
+  (**)
   | Closure of {
-      decision : Function_declaration_decision.t;
-      body : map;
+      decision : 'clos;
+      body : ('call, 'clos) t;
     }
   (**)
 (** A decision at a particular point in code
     (and the tree of sub-decision rooted at that point). *)
 
-and map = t Debuginfo.Map.t
+and ('call, 'clos) t = ('call, 'clos) node Debuginfo.Map.t
 (** A set of decisions, indexed by debuginfo. *)
+
 

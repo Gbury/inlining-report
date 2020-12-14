@@ -6,3 +6,9 @@
 
 type t = string [@@deriving yojson]
 
+(* Conversion function *)
+(* ******************* *)
+
+let conv (t: t) : Ocir_core.Linkage_name.t = t
+
+

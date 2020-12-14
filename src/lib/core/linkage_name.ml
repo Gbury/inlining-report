@@ -6,6 +6,13 @@
     the same name is defined twice).
 *)
 
+(* Type definitions *)
+(* ************************************************************************* *)
+
 type t = string
 
+(* Printing *)
+(* ************************************************************************* *)
+
+let print fmt s = Format.fprintf fmt "%s" s
 

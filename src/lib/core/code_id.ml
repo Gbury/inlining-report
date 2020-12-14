@@ -9,7 +9,18 @@
     - {Closure_id.t} in flambda1
 *)
 
+(* Type definitions *)
+(* ************************************************************************* *)
+
 type t = {
   name : string;
   compilation_unit : Compilation_unit.t;
 }
+
+
+(* Printing *)
+(* ************************************************************************* *)
+
+let print fmt { compilation_unit; name; } =
+  Format.fprintf fmt "%a.%s" Compilation_unit.print compilation_unit name
+

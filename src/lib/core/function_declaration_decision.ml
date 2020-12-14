@@ -10,6 +10,10 @@
     estimated benefits of inlining according to the context.
 *)
 
+(* Type definitions *)
+(* ************************************************************************* *)
+
+
 type flambda2_inline_reason =
   | Attribute
   (** An attribute on the function declaration directed to
@@ -28,7 +32,7 @@ type decision =
 
   (* Flambda1 *)
 
-  | No_decision
+  | No_decision_flambda1
   (** As stated above, flambda1 does not make any decision
       at function declaration time. *)
 
@@ -63,4 +67,44 @@ type t = {
     simplification. Since that distinction also makes sense for
     other inlining strategies, this distinction is kept here. *)
 
+
+(* Convenience wrappers *)
+(* ************************************************************************* *)
+
+let can_inline t =
+  match t with
+  | No_decision_flambda1 -> true
+  | Never_inline_attribute
+  | Function_body_too_large _ -> false
+  | Stub
+  | Inline _ -> true
+
+(* Printing *)
+(* ************************************************************************* *)
+
+let print_decision_reason fmt = function
+  | No_decision_flambda1 ->
+    Format.fprintf fmt "%a"
+      Format.pp_print_text "flambda1 does not make decisions at \
+                            the declaration of functions"
+  | Never_inline_attribute ->
+    Format.fprintf fmt "%a"
+      Format.pp_print_text "the function has an attribute preventing its inlining"
+  | Function_body_too_large threshold ->
+    Format.fprintf fmt "the@ function's@ body@ is@ too@ large,@ \
+                        more@ specifically,@ it@ is@ larger@ than@ the@ threshold:@ %a"
+      Inlining_threshold.print threshold
+  | Stub ->
+    Format.fprintf fmt "the@ function@ is@ a@ stub"
+  | Inline Attribute ->
+    Format.fprintf fmt "the@ function@ has@ an@ attribute@ forcing@ its@ inlining"
+  | Inline Size { body_size; size_threshold; } ->
+    Format.fprintf fmt "the@ function's@ body@ is@ smaller@ \
+                        than@ the@ threshold:@ size=%d < threshold=%a"
+      body_size Inlining_threshold.print size_threshold
+
+let print_decision fmt t =
+  Format.fprintf fmt "@[<v>The function %s be inlined at its use-sites@ \
+                      because @[<hov>%a@]@]"
+    (if can_inline t then "can" else "cannot") print_decision_reason t
 
