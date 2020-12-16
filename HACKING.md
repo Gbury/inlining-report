@@ -92,8 +92,8 @@ weird code in some instances, but should be better than the alternatives.
 
 
 [1]: marshall is builtin in the compiler,
-     json had `ppx_deriving_yojson` and `ppx_yojson_conv`,
-     and s-exp has `ppx_sexp_conv.
+     json has `ppx_deriving_yojson` and `ppx_yojson_conv`,
+     and s-exp has `ppx_sexp_conv`.
 
 [2]: deserializer are typically more complex (they can typically account
      for re-ordering of fields for json formats, etc..), and moreover would
