@@ -1,8 +1,7 @@
 
-(** Compatibility layer over reports as lists of decisions.
-    This helps immensely with versioning of the report formats. *)
+(** Alias to provide a uniform interface across inlining report formats *)
 
-type t = [ `Flambda2_1_0_0 of Inlining_report.t list ] [@@deriving yojson]
+type t = [ | Inlining_report.report ][@@deriving yojson]
 
 
 (* Conversion Function *)
@@ -36,8 +35,9 @@ let rec conv_aux acc = function
     end
 
 and insert_fundecl dbg code_id after = function
-  | (Fundecl (dbg', code_id', before), body) :: (previous, map) :: acc' ->
-    assert (dbg = dbg' && code_id = code_id');
+  | (Fundecl (dbg, code_id', before), body) :: (previous, map) :: acc' ->
+    (* assert (dbg = dbg'); *)
+    assert (code_id = code_id');
     let dbg = Debuginfo.conv dbg in
     let code_id = Code_id.conv code_id in
     let fundecl : Ocir_core.Function_declaration_decision.t = {
@@ -75,7 +75,7 @@ and insert_callsite dbg decision = function
     (Callsite (dbg, decision), Ocir_core.Debuginfo.Map.empty) :: acc
 
   | (Callsite (dbg', decision'), inlined) :: (previous, map) :: acc
-    (* not Ocir_core.Debuginfo.is_prefix ~prefix dbg *) ->
+    (* not Debuginfo.is_prefix ~prefix dbg *) ->
     let dbg' = Debuginfo.conv dbg' in
     let node : (_, _) Ocir_core.Tree.node =
       Call { decision = decision'; inlined; }
@@ -86,7 +86,8 @@ and insert_callsite dbg decision = function
   (* These are invalid stacks *)
   | [] | (Callsite _, _) :: [] -> assert false
 
-let conv (`Flambda2_1_0_0 l : t) : Ocir_core.Report.t =
+let conv (`Flambda2_1_0_0 (meta, l) : t) : Ocir_core.Report.t =
+  let compilation_unit = Compilation_unit.conv meta.compilation_unit in
   let decisions = conv_aux [Toplevel, Ocir_core.Debuginfo.Map.empty] l in
-  { decisions; }
+  { decisions; compilation_unit; }
 

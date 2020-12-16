@@ -24,3 +24,8 @@ type t = {
 let print fmt { compilation_unit; name; } =
   Format.fprintf fmt "%a.%s" Compilation_unit.print compilation_unit name
 
+let print_ctx ~ctx fmt ({ compilation_unit; name; } as t) =
+  if Compilation_unit.equal ctx compilation_unit
+  then Format.fprintf fmt "%s" name
+  else print fmt t
+

@@ -36,6 +36,12 @@ type t = {
 }
 [@@deriving yojson]
 
+type metadata = {
+  compilation_unit : Compilation_unit.t;
+} [@@deriving yojson]
+
+type report = [ `Flambda2_1_0_0 of metadata * t list ][@@deriving yojson]
+
 
 (* Conversion function *)
 (* ******************* *)
