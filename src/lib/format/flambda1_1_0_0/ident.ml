@@ -10,6 +10,12 @@ type t =
   | Predef of { name: string; stamp: int; }
 [@@deriving yojson]
 
+let name = function
+  | Local { name; _ }
+  | Scoped { name; _ }
+  | Global name
+  | Predef { name; _ } -> name
+
 
 (* Conversion function *)
 (* ******************* *)

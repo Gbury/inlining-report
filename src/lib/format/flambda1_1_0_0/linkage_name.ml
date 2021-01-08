@@ -1,10 +1,12 @@
 (** Definition taken from:
-    flambda1:middle_end/flambda/linkage_name.ml
+    flambda1:middle_end/linkage_name.ml
     where it is defined as
     [type t = string] *)
 
 type t = string
 [@@deriving yojson]
+
+let compare = String.compare
 
 (* Conversion function *)
 (* ******************* *)

@@ -59,6 +59,18 @@ let compare_item d1 d2 =
   let c = compare d1.dinfo_end_line d2.dinfo_end_line in
   c
 
+let compare dbg1 dbg2 =
+  let rec loop ds1 ds2 =
+    match ds1, ds2 with
+    | [], [] -> 0
+    | _ :: _, [] -> 1
+    | [], _ :: _ -> -1
+    | d1 :: ds1, d2 :: ds2 ->
+      let c = compare_item d1 d2 in
+      if c <> 0 then c else loop ds1 ds2
+  in
+  loop (List.rev dbg1) (List.rev dbg2)
+
 let rec is_prefix ~prefix dbg =
   match prefix, dbg with
   | [], _ -> true

@@ -9,6 +9,13 @@ type t = {
   name_stamp : int;
 } [@@deriving yojson]
 
+let compare t1 t2 =
+  if t1 == t2 then 0
+  else
+    let c = t1.name_stamp - t2.name_stamp in
+    if c <> 0 then c
+    else Compilation_unit.compare t1.compilation_unit t2.compilation_unit
+
 (* Conversion functions *)
 (* ******************** *)
 
