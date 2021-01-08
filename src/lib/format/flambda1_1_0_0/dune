@@ -1,0 +1,8 @@
+
+(library
+  (name           ocir_format_flambda1_1_0_0)
+  (public_name    ocir.format.flambda1_1_0_0)
+  (lint           (pps ppx_yojson_conv))
+  (preprocess     (pps ppx_yojson_conv))
+  (libraries      yojson ocir_core)
+)

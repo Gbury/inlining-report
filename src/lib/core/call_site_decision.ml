@@ -12,21 +12,69 @@
 (* Type definitions *)
 (* ************************************************************************* *)
 
+
 type attribute_causing_inlining =
   | Always          (** the [@inlined] attribute *)
   | Unroll of int   (** the [@unrolled] attribute; the int payload indicates
                         how much unrolling still needs to be performed. *)
+  | Unknown         (** the attribute was not propagated (e.g. flambda1
+                        does not propagate such attributes) *)
 (** The various attributes attached to a function call that can force
     its inlining. *)
 
-type decision =
 
-  (* Flambda1 *)
+type inlined =
 
-  (* TODO *)
+  | Inline_because_of_decision_at_declaration
+  (** Inlined because this was the decision at the declaration of the function.
+      This is the main reason for inlining in `-OClassic` mode where flambda
+      emulates the behaviour of Closure. *)
+
+  | Inline_attribute of attribute_causing_inlining
+  (** The specified attribute forces inlining of the call. *)
+
+  | Declaration_local_to_application
+  (** From flambda1: the function was local.
+      TODO: get more details about that. *)
+
+  | Without_subfunctions of benefit
+  (** Regular case of a function with a benefit computation that is enough
+      to justify inlining. *)
+
+  | With_subfunctions of benefit * benefit
+  (** TODO: understand what differs with the previous case and what the first
+      benefit refers to. *)
 
 
-  (* Flambda2 *)
+type not_inlined =
+
+  | Do_not_inline_because_of_decision_at_declaration
+  (** Not-inlined becasue this was the decision at the declaration of the
+      function. This is the main reason for not inlining in `-OClassic` mode
+      where flambda emulates the behaviour of Closure. *)
+
+  | Never_inline_attribute
+  (** An unspecified attribute has prevented inlining.
+      TODO: add some specification of which attribute ? since this is done for
+            attributes that force inlining, why not for attributes preventing
+            it ? *)
+
+  | Above_threshold of int option
+  (** From flambda1: there is not enough remaining inlining "fuel" to
+      inline the function, i.e. the maximum inlining threshold has been
+      reached, thus the function wasn't inlined. *)
+
+  | Self_call
+  (** This was a self (i.e. recursive) call, hence there was no use in
+      inlining the call. *)
+
+  | No_useful_approximation
+  (** In this case, there is no interesting approximation for the arguments;
+      which means that inlining cannot discover simplifications (e.g. no
+      constant propagation or other simplifications). Additionally, the body
+      of the function is not particularly small, so the cost of the call/jump
+      to the function body should be small enough (compared to the cost of
+      executing the function body) that it is not interesting to inline. *)
 
   | Environment_says_never_inline
   (** The environment has prevented inlining.
@@ -47,24 +95,36 @@ type decision =
   | Recursion_depth_exceeded
   (** The maximum recursion depth has been exceeded. *)
 
-  | Never_inline_attribute
-  (** An unspecified attribute has prevented inlining.
-      TODO: add some specification of which attribute ? since this is done for
-            attributes that force inlining, why not for attributes preventing
-            it ? *)
+  | Without_subfunctions of benefit
+  (** Regular case of a function with a benefit computation that is enough
+      to justify inlining. *)
 
-  | Inline_because_of_declaration
-  (** Inlined because this was the decision at the declaration of the function. *)
+  | With_subfunctions of benefit * benefit
+  (** TODO: understand what differs with the previous case and what the first
+      benefit refers to. *)
 
-  | Inline_attribute of attribute_causing_inlining
-  (** The specified attribute forces inlining of the call. *)
 
 (** The various decision related to inlining of a function call, or rather, and
     more importantly the reason for the decision to inline or not the call. *)
 
+type decision =
+  | Specialized of specialized
+  | Inlined of not_specialized * inlined
+  | Nothing of not_specialized * not_inlined
+
 type t =
   | Unknown_function
-  (** unknown function cannot be inline (not enough information). *)
+  (** nothing can be done for unknown functions *)
+  | Known_function of {
+      code_id : Code_id.t;
+      decision : decision;
+    }
+  (** case for known functions. *)
+(** The various situations that can be encountered at a function call. *)
+
+
+(*
+
   | Non_inlinable_function of {
       code_id : Code_id.t;
     }
@@ -79,7 +139,7 @@ type t =
       decision : decision;
     }
   (** There was enough information about the function to make a decision. *)
-(** The various situations that can be encountered at a function call. *)
+*)
 
 
 (* Printing *)

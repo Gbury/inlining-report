@@ -8,6 +8,7 @@
     ; External deps
     yojson
     ; Deps for the various formats
+    ocir_format_flambda1_1_0_0
     ocir_format_flambda2_1_0_0
   )
 )

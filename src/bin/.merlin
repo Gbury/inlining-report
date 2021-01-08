@@ -8,6 +8,7 @@ B /home/guigui/build/ocaml/inlining-report/_opam/lib/yojson
 B ../../_build/default/src/bin/.main.eobjs/byte
 B ../../_build/default/src/lib/core/.ocir_core.objs/byte
 B ../../_build/default/src/lib/format/.ocir_format.objs/byte
+B ../../_build/default/src/lib/format/flambda1_1_0_0/.ocir_format_flambda1_1_0_0.objs/byte
 B ../../_build/default/src/lib/format/flambda2_1_0_0/.ocir_format_flambda2_1_0_0.objs/byte
 S /home/guigui/build/ocaml/inlining-report/_opam/lib/biniou
 S /home/guigui/build/ocaml/inlining-report/_opam/lib/easy-format
@@ -18,5 +19,6 @@ S /home/guigui/build/ocaml/inlining-report/_opam/lib/yojson
 S .
 S ../lib/core
 S ../lib/format
+S ../lib/format/flambda1_1_0_0
 S ../lib/format/flambda2_1_0_0
 FLG -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs
