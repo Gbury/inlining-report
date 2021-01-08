@@ -23,22 +23,27 @@ type specialized =
   | Forced_by_attribute of attribute_forcing
   (** The specified attribute forces specialization. *)
 
-  | Without_subfunctions of benefit
+  | Without_subfunctions of Whether_sufficient_benefit.t
   (** Regular case of a function with a benefit computation that is enough
       to justify inlining. *)
 
-  | With_subfunctions of benefit * benefit
+  | With_subfunctions of
+      Whether_sufficient_benefit.t *
+      Whether_sufficient_benefit.t
   (** TODO: understand what differs with the previous case and what the first
       benefit refers to. *)
 
 
 type not_specialized =
 
+  | Flambda2
+  (** Currently, flambda2 does not perform any specialization. *)
+
   | Classic_mode
   (** In `-OClassic` mode, specialization never happens because it never
       happens in Closure. *)
 
-  | Never_specialize_attribute
+  | Forbidden_by_attribute of attribute_forbidding
   (** An unspecified attribute has prevented inlining. *)
 
   | Above_threshold of int option
@@ -65,7 +70,9 @@ type not_specialized =
   | Self_call
   (** This is a self/recursive call, specialization cannot happen. *)
 
-  | Not_beneficial of benefit * benefit
+  | Not_beneficial of
+      Whether_sufficient_benefit.t *
+      Whether_sufficient_benefit.t
   (** Benefit computation concluded there wasn't enough benefit to
       specialize.
       TODO: understand what the two benefits represent. *)
@@ -76,4 +83,19 @@ type not_specialized =
       of the compiler invocation, typically by one of the `-O`
       options. Exceeding this depth prevents any inlining or
       specialization. *)
+
+
+(* Type definitions *)
+(* ************************************************************************* *)
+
+let explain_why fmt = function
+  | Forced_by_attribute Always ->
+    Format.fprintf fmt "of the [@specialized] attribute"
+  | _ -> assert false
+
+let explain_why_not fmt = function
+  | Classic_mode ->
+    Format.fprintf fmt "the `-OClassic` mode prevents any specialization"
+  | _ -> assert false
+
 

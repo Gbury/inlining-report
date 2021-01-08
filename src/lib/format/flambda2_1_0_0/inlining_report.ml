@@ -51,10 +51,13 @@ let conv_callsite t : Ocir_core.Call_site_decision.t =
   | Unknown_function -> Unknown_function
   | Non_inlinable_function { code_id; } ->
     let code_id = Code_id.conv code_id in
-    Non_inlinable_function { code_id; }
+    let decision : Ocir_core.Call_site_decision.decision =
+      Nothing(Flambda2, Forbidden_by_decision_at_declaration)
+    in
+    Known_function { code_id; decision; }
   | Inlinable_function { code_id; decision; } ->
     let code_id = Code_id.conv code_id in
     let decision = Inlining_decision.conv_callsite decision in
-    Inlinable_function { code_id; decision; }
+    Known_function { code_id; decision; }
 
 

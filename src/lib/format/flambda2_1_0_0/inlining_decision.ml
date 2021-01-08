@@ -46,18 +46,22 @@ let conv_fundecl t : Ocir_core.Function_declaration_decision.decision =
 
 let conv_callsite t : Ocir_core.Call_site_decision.decision =
   match (t : Call_site_decision.t) with
-  | Environment_says_never_inline -> Environment_says_never_inline
-  | Unrolling_depth_exceeded -> Unrolling_depth_exceeded
-  | Max_inlining_depth_exceeded -> Max_inlining_depth_exceeded
-  | Recursion_depth_exceeded -> Recursion_depth_exceeded
-  | Never_inline_attribute -> Never_inline_attribute
+  | Environment_says_never_inline ->
+    Nothing (Flambda2, Environment_says_never_inline)
+  | Unrolling_depth_exceeded ->
+    Nothing(Flambda2, Unrolling_depth_exceeded)
+  | Max_inlining_depth_exceeded ->
+    Nothing(Flambda2, Max_inlining_depth_exceeded)
+  | Recursion_depth_exceeded ->
+    Nothing(Flambda2, Recursion_depth_exceeded)
+  | Never_inline_attribute ->
+    Nothing(Flambda2, Forbidden_by_attribute Never)
   | Inline { attribute = None; unroll_to = None; } ->
-    Inline_because_of_declaration
+    Inlined(Flambda2, Forced_by_decision_at_declaration)
   | Inline { attribute = Some Always; unroll_to = _; } ->
-    Inline_attribute Always
+    Inlined(Flambda2, Forced_by_attribute Always)
   | Inline { attribute = Some Unroll; unroll_to = Some n; } ->
-    Inline_attribute (Unroll n)
-
+    Inlined(Flambda2, Forced_by_attribute (Unroll n))
   | Inline { attribute = None; unroll_to = Some _; }
   | Inline { attribute = Some Unroll; unroll_to = None; }
     -> assert false

@@ -60,20 +60,12 @@ and print_node ~t ~depth fmt dbg (node : node) =
       "The function call has not been inlined"
       "because the optimizer had not enough information about the function";
     print_map ~t ~depth:(depth + 1) fmt inlined
-  | Call { inlined; decision = Non_inlinable_function { code_id; }; } ->
-    Format.fprintf fmt "%a @[<v>%s of %a{%a}@ @ %s@ %s@]@\n@\n"
-      stars depth
-      (if depth = 0 then "Toplevel application" else "Application")
-      (print_code_id ~t) code_id Debuginfo.print_compact dbg
-      "The function call has not been inlined"
-      "because its definition was deemed not inlinable";
-    print_map ~t ~depth:(depth + 1) fmt inlined
-  | Call { inlined; decision = Inlinable_function { code_id; decision; }; } ->
+  | Call { inlined; decision = Known_function { code_id; decision; }; } ->
     Format.fprintf fmt "%a @[<v>%s of %a{%a}@ @ %a@]@\n@\n"
       stars depth
       (if depth = 0 then "Toplevel application" else "Application")
       (print_code_id ~t) code_id Debuginfo.print_compact dbg
-      Call_site_decision.print_decision decision;
+      Call_site_decision.print_and_explain_decision decision;
     print_map ~t ~depth:(depth + 1) fmt inlined
 
 let print fmt ({ decisions; compilation_unit = _; } as t) =

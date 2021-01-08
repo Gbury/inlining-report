@@ -1,6 +1,10 @@
 
 (** Benefits
 
+    Kind of a misnormer, but this represents the change in terms of relevant
+    characteristics between two pieces of code, typically an original code
+    and a simplified (i.e. inlined or specialized) version of it.
+
 *)
 
 (* Type definitions *)
@@ -13,26 +17,5 @@ type t = {
   remove_branch : int;
   direct_call_of_indirect : int;
   requested_inline : int;
-}
-
-type result = {
-
-  (* Raw Benefit of the simplification (inlining/specialization) *)
-  benefit : t;
-
-  (* Context of the simplification *)
-  round : int;
-  toplevel : bool;
-  branch_depth : int;
-  lifting : bool;
-
-  (* Size before and after simplification *)
-  original_size : int;
-  new_size : int;
-
-  (* Cached results of the benefit vs. code size comparison *)
-  evaluated_benefit : int;
-  estimate : bool;
-
 }
 
