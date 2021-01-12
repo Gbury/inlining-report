@@ -17,6 +17,7 @@ type attribute_forcing =
 
 type attribute_forbidding =
   | Never           (** the [@specialized never] attribute *)
+  | Unknown         (** the exact attribute was not propagated *)
 (** The various attributes attached to a function call that can prevent
     its inlining. *)
 
@@ -65,7 +66,7 @@ type not_inlined =
   (** This was a self (i.e. recursive) call, hence there was no use in
       inlining the call. *)
 
-  | No_useful_approximation
+  | No_useful_approximations
   (** In this case, there is no interesting approximation for the arguments;
       which means that inlining cannot discover simplifications (e.g. no
       constant propagation or other simplifications). Additionally, the body

@@ -60,5 +60,44 @@ module Inlining_report = struct
   type report = [ `Flambda1_1_0_0 of metadata * t ]
   [@@deriving yojson]
 
+  let rec conv_aux t =
+    Place_map.fold (fun (dbg, closure_id, kind) node acc ->
+        match kind, node with
+        | Closure, Closure closure ->
+          let body = conv_aux closure in
+          let dbg = Debuginfo.conv dbg in
+          let code_id = Closure_id.conv closure_id in
+          let decision : Ocir_core.Function_declaration_decision.t = {
+            code_id;
+            before_simplify = No_decision_flambda1;
+            after_simplify = No_decision_flambda1;
+          } in
+          let node = Ocir_core.Tree.Closure { decision; body; } in
+          Ocir_core.Debuginfo.Map.add dbg node acc
+        | Call, Call call ->
+          let dbg = Debuginfo.conv dbg in
+          let code_id = Closure_id.conv closure_id in
+          let inlined = Option.map conv_aux call.inlined in
+          let specialized = Option.map conv_aux call.specialised in
+          let decision = match call.decision with
+            | Some d -> Inlining_stats_types.Decision.conv d
+            | None -> assert false (* a missing call decision is an error
+                                      (flambda1 should not emit such reports) *)
+          in
+          let decision =
+            Ocir_core.Call_site_decision.Known_function { code_id; decision; }
+          in
+          let node = Ocir_core.Tree.Call { decision; inlined; specialized; } in
+          Ocir_core.Debuginfo.Map.add dbg node acc
+        (* These should not happen *)
+        | Closure, Call _
+        | Call, Closure _ -> assert false
+      ) t Ocir_core.Debuginfo.Map.empty
+
+  let conv (`Flambda1_1_0_0 (meta, t) : report) : Ocir_core.Report.t =
+    let compilation_unit = Compilation_unit.conv meta.compilation_unit in
+    let decisions = conv_aux t in
+    { decisions; compilation_unit; }
+
 end
 

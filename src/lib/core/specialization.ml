@@ -10,11 +10,13 @@
 
 type attribute_forcing =
   | Always              (** the [@specialized] attribute *)
+  | Unknown             (** the exact attribute is missing *)
 (** The attrbiute(s?) that can force specialization of a function at
     call site. *)
 
 type attribute_forbidding =
   | Never               (** the [@specialize never] attribute *)
+  | Unknown             (** the exact attribute is missing *)
 (** The attribute that can prevent specialization of a function at
     call site. *)
 

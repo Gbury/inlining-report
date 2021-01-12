@@ -15,7 +15,7 @@
 type decision =
   | Specialized of Specialization.specialized
   | Inlined of Specialization.not_specialized * Inlining.inlined
-  | Nothing of Specialization.not_specialized * Inlining.not_inlined
+  | Unchanged of Specialization.not_specialized * Inlining.not_inlined
 
 type t =
   | Unknown_function
@@ -42,7 +42,7 @@ let print_and_explain_decision fmt = function
             @[<hov>The function call was inlined because %a@].@]"
       Specialization.explain_why_not not_specialized
       Inlining.explain_why inlined
-  | Nothing (not_specialized, not_inlined) ->
+  | Unchanged (not_specialized, not_inlined) ->
     Format.fprintf fmt
       "@[<v>@[<hov>The function was not specialized because %a.@]@ \
             @[<hov>The function call was not inlined because %a@].@]"

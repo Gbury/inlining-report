@@ -12,6 +12,8 @@ type cur =
   | Callsite of Debuginfo.t * Ocir_core.Call_site_decision.t
   | Fundecl of Debuginfo.t * Code_id.t * Ocir_core.Function_declaration_decision.decision
 
+let opt_of_map m = if Ocir_core.Debuginfo.Map.is_empty m then None else Some m
+
 let rec conv_aux acc = function
   | [] ->
     begin match acc with
@@ -54,9 +56,11 @@ and insert_fundecl dbg code_id after = function
   | (Callsite (dbg', decision'), inlined) :: (previous, map) :: acc
     (* not Ocir_core.Debuginfo.is_prefix ~prefix dbg *) ->
     let dbg' = Debuginfo.conv dbg' in
-    let node : (_, _) Ocir_core.Tree.node =
-      Call { decision = decision'; inlined; }
-    in
+    let node : (_, _) Ocir_core.Tree.node = Call {
+        decision = decision';
+        inlined = opt_of_map inlined;
+        specialized = None;
+      } in
     let map = Ocir_core.Debuginfo.Map.add dbg' node map in
     insert_fundecl dbg code_id after ((previous, map) :: acc)
 
@@ -77,9 +81,11 @@ and insert_callsite dbg decision = function
   | (Callsite (dbg', decision'), inlined) :: (previous, map) :: acc
     (* not Debuginfo.is_prefix ~prefix dbg *) ->
     let dbg' = Debuginfo.conv dbg' in
-    let node : (_, _) Ocir_core.Tree.node =
-      Call { decision = decision'; inlined; }
-    in
+    let node : (_, _) Ocir_core.Tree.node = Call {
+        decision = decision';
+        inlined = opt_of_map inlined;
+        specialized = None;
+      } in
     let map = Ocir_core.Debuginfo.Map.add dbg' node map in
     insert_callsite dbg decision ((previous, map) :: acc)
 

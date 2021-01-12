@@ -39,7 +39,8 @@
 type ('call, 'clos) node =
   | Call of {
       decision : 'call;
-      inlined : ('call, 'clos) t;
+      inlined : ('call, 'clos) t option;
+      specialized : ('call, 'clos) t option;
     }
   (**)
   | Closure of {

@@ -40,6 +40,10 @@ let print_code_id ~t fmt code_id =
 let rec print_map ~t ~depth fmt (map : map) =
   Debuginfo.Map.iter (print_node ~t ~depth fmt) map
 
+and print_map_opt ~t ~depth fmt = function
+  | None -> ()
+  | Some map -> print_map ~t ~depth fmt map
+
 and print_node ~t ~depth fmt dbg (node : node) =
   match node with
   | Closure { body; decision = { code_id; before_simplify; after_simplify; }; } ->
@@ -52,21 +56,23 @@ and print_node ~t ~depth fmt dbg (node : node) =
     Format.fprintf fmt "%a @[<v>After simplification of %a{%a}:@ @ %a@]@\n@\n@\n"
       stars (depth + 1) (print_code_id ~t) code_id Debuginfo.print_compact dbg
       Function_declaration_decision.print_decision after_simplify;
-  | Call { inlined; decision = Unknown_function; } ->
+  | Call { inlined; specialized; decision = Unknown_function; } ->
     Format.fprintf fmt "%a @[<v>%s of %s{%a}@ @ %s@ %s@]@\n@\n"
       stars depth
       (if depth = 0 then "Toplevel application" else "Application")
       "<unknown function>" Debuginfo.print_compact dbg
       "The function call has not been inlined"
       "because the optimizer had not enough information about the function";
-    print_map ~t ~depth:(depth + 1) fmt inlined
-  | Call { inlined; decision = Known_function { code_id; decision; }; } ->
+    print_map_opt ~t ~depth:(depth + 1) fmt specialized;
+    print_map_opt ~t ~depth:(depth + 1) fmt inlined
+  | Call { inlined; specialized; decision = Known_function { code_id; decision; }; } ->
     Format.fprintf fmt "%a @[<v>%s of %a{%a}@ @ %a@]@\n@\n"
       stars depth
       (if depth = 0 then "Toplevel application" else "Application")
       (print_code_id ~t) code_id Debuginfo.print_compact dbg
       Call_site_decision.print_and_explain_decision decision;
-    print_map ~t ~depth:(depth + 1) fmt inlined
+    print_map_opt ~t ~depth:(depth + 1) fmt specialized;
+    print_map_opt ~t ~depth:(depth + 1) fmt inlined
 
 let print fmt ({ decisions; compilation_unit = _; } as t) =
   print_map ~t ~depth:0 fmt decisions
