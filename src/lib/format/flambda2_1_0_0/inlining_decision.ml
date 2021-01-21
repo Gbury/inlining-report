@@ -44,24 +44,16 @@ let conv_fundecl t : Ocir_core.Function_declaration_decision.decision =
   | Inline Some (body_size, threshold) ->
     Inline (Size { body_size ; size_threshold = Inlining_cost.conv threshold; })
 
-let conv_callsite t : Ocir_core.Call_site_decision.decision =
+let conv_callsite t : Ocir_core.Inlining.t =
   match (t : Call_site_decision.t) with
-  | Environment_says_never_inline ->
-    Unchanged (Flambda2, Environment_says_never_inline)
-  | Unrolling_depth_exceeded ->
-    Unchanged(Flambda2, Unrolling_depth_exceeded)
-  | Max_inlining_depth_exceeded ->
-    Unchanged(Flambda2, Max_inlining_depth_exceeded)
-  | Recursion_depth_exceeded ->
-    Unchanged(Flambda2, Recursion_depth_exceeded)
-  | Never_inline_attribute ->
-    Unchanged(Flambda2, Forbidden_by_attribute Never)
-  | Inline { attribute = None; unroll_to = None; } ->
-    Inlined(Flambda2, Forced_by_decision_at_declaration)
-  | Inline { attribute = Some Always; unroll_to = _; } ->
-    Inlined(Flambda2, Forced_by_attribute Always)
-  | Inline { attribute = Some Unroll; unroll_to = Some n; } ->
-    Inlined(Flambda2, Forced_by_attribute (Unroll n))
+  | Environment_says_never_inline -> Not_inlined Environment_says_never_inline
+  | Unrolling_depth_exceeded -> Not_inlined Unrolling_depth_exceeded
+  | Max_inlining_depth_exceeded -> Not_inlined Max_inlining_depth_exceeded
+  | Recursion_depth_exceeded -> Not_inlined Recursion_depth_exceeded
+  | Never_inline_attribute -> Not_inlined (Forbidden_by_attribute Never)
+  | Inline { attribute = None; unroll_to = None; } -> Inlined Forced_by_decision_at_declaration
+  | Inline { attribute = Some Always; unroll_to = _; } -> Inlined (Forced_by_attribute Always)
+  | Inline { attribute = Some Unroll; unroll_to = Some n; } -> Inlined(Forced_by_attribute (Unroll n))
   | Inline { attribute = None; unroll_to = Some _; }
   | Inline { attribute = Some Unroll; unroll_to = None; }
     -> assert false

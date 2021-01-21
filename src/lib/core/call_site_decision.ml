@@ -12,25 +12,15 @@
 (* Type definitions *)
 (* ************************************************************************* *)
 
-type decision =
+type t =
   | Specialized of Specialization.specialized
   | Inlined of Specialization.not_specialized * Inlining.inlined
   | Unchanged of Specialization.not_specialized * Inlining.not_inlined
 
-type t =
-  | Unknown_function
-  (** nothing can be done for unknown functions *)
-  | Known_function of {
-      code_id : Code_id.t;
-      decision : decision;
-    }
-  (** case for known functions. *)
-(** The various situations that can be encountered at a function call. *)
-
 (* Printing *)
 (* ************************************************************************* *)
 
-let print_and_explain_decision fmt = function
+let print_and_explain fmt = function
   | Specialized specialized ->
     Format.fprintf fmt
       "@[<v>@[<hov>The function was specialized because %a.@]@ \

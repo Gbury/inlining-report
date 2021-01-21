@@ -105,20 +105,48 @@ type not_inlined =
       benefit refers to. *)
 (** The reason why a funciton call was not inlined. *)
 
+type t =
+  | Inlined of inlined
+  | Not_inlined of not_inlined
+
 
 (* Printing explanations *)
 (* ************************************************************************* *)
 
+let print_threshold_opt fmt = function
+  | None -> ()
+  | Some i -> Format.fprintf fmt " (%d)" i
+
 let explain_why fmt = function
   | Forced_by_decision_at_declaration ->
-    Format.fprintf fmt "the@ function@ was@ deemed@ inlinable@ from@ its@ declaration"
+    Format.pp_print_text fmt "the function was deemed inlinable from its declaration"
   | Forced_by_attribute Always ->
-    Format.fprintf fmt "the@ call@ has@ an@ [@@inline always]@ attribute"
+    Format.pp_print_text fmt "the call has an [@@inline always] attribute"
   | Forced_by_attribute (Unroll n) ->
     Format.fprintf fmt "the@ call@ has@ an@ [@@unroll %d]@ attribute" n
-  | _ -> assert false
+  | Forced_by_attribute Unknown ->
+    Format.pp_print_text fmt "of an annotation"
+  | Declaration_local_to_application ->
+    Format.pp_print_text fmt "the function declaration was local to the application"
+  | Without_subfunctions _
+  | With_subfunctions _ ->
+    Format.pp_print_text fmt "the expected benefit outweighed the change in code size"
 
 let explain_why_not fmt = function
+  | Forbidden_by_decision_at_declaration ->
+    Format.pp_print_text fmt "it was forbidden by the decision at the function's declaration"
+  | Forbidden_by_attribute Never ->
+    Format.fprintf fmt "the@ call@ has@ an@ attribute@ forbidding@ inlining"
+  | Forbidden_by_attribute Unknown ->
+    Format.fprintf fmt "of an annotation"
+  | Above_threshold opt ->
+    Format.fprintf fmt "it is larger than the remaining size threshold%a"
+      print_threshold_opt opt
+  | Self_call ->
+    Format.fprintf fmt "it was a self call"
+  | No_useful_approximations ->
+    Format.pp_print_text fmt "there was no useful approximation about any of \
+                              its parameters, and it was not particularly small"
   | Environment_says_never_inline ->
     Format.fprintf fmt "the@ environment@ says@ never@ to@ inline"
   | Unrolling_depth_exceeded ->
@@ -127,7 +155,14 @@ let explain_why_not fmt = function
     Format.fprintf fmt "the@ maximum@ inlining@ depth@ has@ been@ exceeded"
   | Recursion_depth_exceeded ->
     Format.fprintf fmt "the@ maximum@ recursion@ depth@ has@ been@ exceeded"
-  | Forbidden_by_attribute Never ->
-    Format.fprintf fmt "the@ call@ has@ an@ attribute@ forbidding@ inlining"
-  | _ -> assert false
+  | Without_subfunctions _
+  | With_subfunctions _ ->
+    Format.pp_print_text fmt "the expected benefit did not outweigh the change in code size"
+
+let summary fmt = function
+  | Inlined inlined ->
+    Format.fprintf fmt "The@ call@ was@ inlined@ because@ %a" explain_why inlined
+  | Not_inlined not_inlined ->
+    Format.fprintf fmt "The@ call@ was@ not@ inlined@ because@ %a" explain_why_not not_inlined
+
 

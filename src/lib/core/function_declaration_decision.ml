@@ -104,7 +104,7 @@ let print_decision_reason fmt = function
       body_size Inlining_threshold.print size_threshold
 
 let print_decision fmt t =
-  Format.fprintf fmt "@[<v>The function %s be inlined at its use-sites@ \
-                      because @[<hov>%a@]@]"
+  Format.fprintf fmt "@[<hov>The@ function@ %s@ be@ inlined@ at@ its@ \
+                      use-sites@ because@ %a@]"
     (if can_inline t then "can" else "cannot") print_decision_reason t
 

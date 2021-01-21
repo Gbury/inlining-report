@@ -127,17 +127,4 @@ module Decision = struct
     | Unchanged of Not_specialised.t * Not_inlined.t
   [@@deriving yojson]
 
-  let conv t : Ocir_core.Call_site_decision.decision =
-    match (t : t) with
-    | Prevented Function_prevented_from_inlining ->
-      Unchanged (Above_threshold None, Above_threshold None)
-    | Prevented Level_exceeded ->
-      Unchanged (Max_inlining_depth_exceeded, Max_inlining_depth_exceeded)
-    | Specialised specialised ->
-      Specialized (Specialised.conv specialised)
-    | Inlined (not_specialised, inlined) ->
-      Inlined (Not_specialised.conv not_specialised, Inlined.conv inlined)
-    | Unchanged (not_specialised, not_inlined) ->
-      Unchanged (Not_specialised.conv not_specialised, Not_inlined.conv not_inlined)
-
 end
