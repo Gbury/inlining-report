@@ -136,7 +136,7 @@ and print_specialization ~t ~depth fmt
     Specialization.summary  (Specialized spec_reason);
   (* TODO: print computation details (i.e. benefit) *)
   print_map_if_not_empty fmt spec_analysis ~t ~depth:(depth + 1)
-    ~purpose:(Format.asprintf "Specialisation of %a into %a"
+    ~purpose:(Format.dprintf "Specialisation of %a into %a"
                 (print_code_id ~t) orig_code_id (print_code_id ~t) spec_code_id)
 
 and print_after_spec ~t ~depth fmt
@@ -149,16 +149,16 @@ and print_after_spec ~t ~depth fmt
     (print_code_id ~t) code_id Debuginfo.print_compact dbg
     Specialization.summary (Not_specialized no_spec_reason)
     Inlining.summary inlining_summary;
-  print_map_if_not_empty fmt no_spec_analysis
-    ~purpose:"Specialization analysis" ~t ~depth:(depth + 1);
-  print_map_if_not_empty fmt inlining_analysis
-    ~purpose:"Inlining analysis" ~t ~depth:(depth + 1);
+  print_map_if_not_empty fmt no_spec_analysis ~t ~depth:(depth + 1)
+    ~purpose:(Format.dprintf "Specialization analysis");
+  print_map_if_not_empty fmt inlining_analysis ~t ~depth:(depth + 1)
+    ~purpose:(Format.dprintf "Inlining analysis");
   ()
 
 and print_map_if_not_empty ~purpose ~t ~depth fmt map =
   if Debuginfo.Map.is_empty map then ()
   else begin
-    Format.fprintf fmt "%a @[<v>%s@]@\n@\n" stars depth purpose;
+    Format.fprintf fmt "%a @[<v>%t@]@\n@\n" stars depth purpose;
     print_map ~t ~depth:(depth + 1) fmt map
   end
 

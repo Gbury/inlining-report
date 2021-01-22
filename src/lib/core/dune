@@ -3,6 +3,8 @@
   (name           ocir_core)
   (public_name    ocir.core)
   (libraries
+    ; External deps
+    fmt
     ; Compiler-libs packaged
     ocaml-compiler-libs.common
     ;

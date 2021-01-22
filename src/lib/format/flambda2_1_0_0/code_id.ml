@@ -16,5 +16,5 @@ type t = {
 
 let conv { compilation_unit; name; linkage_name = _; } : Ocir_core.Code_id.t =
   let compilation_unit = Compilation_unit.conv compilation_unit in
-  { name; compilation_unit; }
+  { name; compilation_unit; stamp = None; }
 

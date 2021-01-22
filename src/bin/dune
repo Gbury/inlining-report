@@ -3,6 +3,8 @@
  (name         main)
  (public_name  ocir)
  (libraries
+   ; external deps
+   fmt
    ; internal lib
    ocir_core ocir_format
  )

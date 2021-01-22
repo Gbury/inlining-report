@@ -19,7 +19,7 @@ let compare t1 t2 =
 (* Conversion functions *)
 (* ******************** *)
 
-let conv { compilation_unit; name; name_stamp = _; } : Ocir_core.Code_id.t =
+let conv { compilation_unit; name; name_stamp; } : Ocir_core.Code_id.t =
   let compilation_unit = Compilation_unit.conv compilation_unit in
-  { name; compilation_unit; }
+  { name; compilation_unit; stamp = Some name_stamp; }
 
