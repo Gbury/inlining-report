@@ -20,6 +20,7 @@ of the library to provide various features, such as comparing reports, etc...")
     (ocaml (>= 4.04.0))
     (ocaml-compiler-libs (>= v0.12.3))
     (dune (>= 2.7))
+    fmt
     (yojson (>= 1.7.0))
     (ppx_yojson_conv (>= v0.14.0))
   )
